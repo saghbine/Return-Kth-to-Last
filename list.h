@@ -30,57 +30,81 @@ class List
 {
     Node<T>* head;
     
-    void pop();
+    void remove(Node<T>* p){Node<T>* d=p->next; p->next=d->next; delete d;}
+    
+    int count()
+    {
+        int counter=0;
+        
+        for(Node<T>* it=head; it != NULL; it=it->next)
+            counter++;
+        
+        return counter;
+    }
     
 public:
     List(){head=NULL;}
-    void push(const T &e){Node<T>* n=new Node<T>(e); n->next=head; head=n;}
-    
-    const T &Return_Kth_to_Last(int k) const // k is kth-to-last T in singly linked list
-    {
-        if(k < 1) // if k isn't positive
-            throw "Function ended with exit code: " + to_string(k); // throw exception
-        
-        int counter=0; // to count size of singly linked list
-        
-        for(Node<T>* n=head; n != NULL; n=n->next) // for node n at head...tail in singly linked list
-            counter++; // increment counter
-        
-        if(k > counter) // if k is greater than size of singly linked list
-            throw "Function ended with exit code: " + to_string(k); // throw exception
-        
-        Node<T>* kth=head; // to return kth-to-last's data
-            
-        for(int i=counter; i > k; kth=kth->next, i--); // for node kth at head...kth-to-last in singly linked list
-            
-        return kth->data; // return kth-to-last's data
-    }
     
     void show() const
     {
-        for(Node<T>* n=head; n != NULL; n=n->next)
-            cout<<n->data<<(n->next != NULL ? "->" : "");
-        
-        if(head != NULL)
-            cout<<endl;
+        for(Node<T>* it=head; it != NULL; it=it->next)
+            cout<<it->data<<(it->next != NULL ? "->" : "");
     }
     
-    ~List()
+    void Remove_Dups()
     {
-        while(head != NULL)
-            pop();
+        if(head == NULL || head->next == NULL) // if singly-linked-list is empty or just includes head
+            return;
+        
+        for(Node<T>* it1=head; it1->next != NULL; it1=it1->next) // for it1 @ head...(second-to-last)node in singly-linked-list
+            for(Node<T>* it2=it1; it2 != NULL; it2=it2->next) // for it2 @ it1...tail in singly-linked-list
+                while(it2->next != NULL && it1->data == it2->next->data) // while it2 isn't tail and it1 is equal to it2's next
+                    remove(it2); // unlink and delete it2's next from singly-linked-list
     }
+    
+    const T &Return_Kth_to_Last(int k) // k is kth-to-last position in singly-linked-list
+    {
+        int size=count(); // size is size of singly-linked-list
+        
+        if(k < 1 || k > size) // if k is invalid
+            throw "Function ended with exit code: "+ (head != NULL ? to_string(k) : to_string(0));
+        
+        Node<T>* kth=head; // kth points to head of singly-linked-list
+        
+        for(int c=size; c > k; kth=kth->next, c--); // kth points to kth-to-last node of singly-linked-list
+        
+        return kth->data; // return kth-to-last element in singly-linked-list
+    }
+    
+    void pull(const T &e);
+    ~List();
 };
 
 template<class T>
-void List<T>::pop()
+void List<T>::pull(const T &e)
 {
-    if(head != NULL)
+    Node<T>* n=new Node<T>(e);
+    
+    if(head == NULL)
+        head=n;
+    else
     {
-        Node<T>* n=head->next;
+        Node<T>* it=head;
+        
+        for(; it->next != NULL; it=it->next);
+        it->next=n;
+    }
+}
+
+template<class T>
+List<T>::~List()
+{
+    while(head != NULL)
+    {
+        Node<T>* it=head->next;
         
         delete head;
-        head=n;
+        head=it;
     }
 }
 

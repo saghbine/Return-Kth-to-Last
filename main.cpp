@@ -6,7 +6,8 @@
 //
 
 #include "list.h"
-#include <cstdlib>
+
+void initializer(List<int> &l);
 
 int main()
 {
@@ -15,14 +16,10 @@ int main()
     cout<<"input\n-----\n\t";
     List<int> l;
     srand(int(time(0)));
-    
-    for(int i=1; i <= 10; i++)
-        l.push(rand()%10+1);
-    
+    initializer(l);
     l.show();
     
-    cout<<"\noutput\n------\n";
-    
+    cout<<"\n\noutput\n------\n";
     try
     {
         l.Return_Kth_to_Last(0);
@@ -38,7 +35,7 @@ int main()
         {
             cout<<"\tThe "<<i;
             
-            switch(i)
+            switch(i%10)
             {
                 case 1: cout<<"st";
                     break;
@@ -49,7 +46,7 @@ int main()
                 default: cout<<"th";
             }
             
-            cout<<"-to-last integer in the singly linked list is "<<l.Return_Kth_to_Last(i)<<".\n";
+            cout<<"-to-last integer in the singly-linked-list is "<<l.Return_Kth_to_Last(i)<<".\n";
         }
         
         l.Return_Kth_to_Last(11);
@@ -62,4 +59,10 @@ int main()
     cout<<"solution\n--------\n\tAuxiliary space complexity: O(1); time complexity: O(n).\n\n";
     
     return 0;
+}
+
+void initializer(List<int> &l)
+{
+    for(int i=1; i <= 10; i++)
+        l.pull(rand()%10+1);
 }
